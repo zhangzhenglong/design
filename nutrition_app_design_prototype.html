@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营养识别APP原型</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .intro {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .screens {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .screen {
+            width: 300px;
+            background-color: #fff;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .screen-header {
+            height: 50px;
+            background-color: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .screen-content {
+            height: 550px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .screen-title {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .nav-item.active {
+            color: #4CAF50;
+        }
+        
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            background-color: #ddd;
+            border-radius: 50%;
+        }
+        
+        .active .nav-icon {
+            background-color: #4CAF50;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .btn-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .food-item {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .food-img {
+            width: 60px;
+            height: 60px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-right: 15px;
+        }
+        
+        .food-info {
+            flex: 1;
+        }
+        
+        .food-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .food-nutrition {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+        
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 14px;
+        }
+        
+        .chat-message.app .chat-bubble {
+            background-color: #f1f1f1;
+            border-top-left-radius: 5px;
+        }
+        
+        .chat-message.user .chat-bubble {
+            background-color: #4CAF50;
+            color: white;
+            border-top-right-radius: 5px;
+        }
+        
+        .input-container {
+            display: flex;
+            padding: 10px;
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nutrition-card {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nutrition-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .nutrition-img {
+            width: 80px;
+            height: 80px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-right: 15px;
+        }
+        
+        .nutrition-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .nutrition-detail {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .nutrition-bar {
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .nutrition-progress {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 4px;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: #eee;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-bio {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .stat-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0 15px;
+        }
+        
+        .chart-container {
+            height: 200px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-end;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            margin: 0 5px;
+            background-color: #4CAF50;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .chart-label {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .onboarding-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .onboarding-img {
+            width: 200px;
+            height: 200px;
+            background-color: #eee;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .onboarding-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .onboarding-desc {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .dots {
+            display: flex;
+            margin-bottom: 30px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+        
+        .dot.active {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="intro">
+            <h1>营养识别APP原型</h1>
+            <p>这款APP专注于通过拍照识别食物的营养成分，并在照片不清晰或信息不足时进行智能多轮对话追问。</p>
+        </div>
+        
+        <div class="screens">
+            <!-- 引导页1 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">引导页1</div>
+                </div>
+                <div class="screen-content">
+                    <div class="onboarding-content">
+                        <div class="onboarding-img"></div>
+                        <h2 class="onboarding-title">拍照识别食物</h2>
+                        <p class="onboarding-desc">只需一键拍照，即可识别食物的营养成分，让健康饮食变得简单</p>
+                        <div class="dots">
+                            <div class="dot active"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <button class="btn">下一步</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 引导页2 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">引导页2</div>
+                </div>
+                <div class="screen-content">
+                    <div class="onboarding-content">
+                        <div class="onboarding-img"></div>
+                        <h2 class="onboarding-title">智能对话</h2>
+                        <p class="onboarding-desc">当照片不清晰时，我们会通过智能对话帮助您获取更准确的营养信息</p>
+                        <div class="dots">
+                            <div class="dot"></div>
+                            <div class="dot active"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <button class="btn">下一步</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 引导页3 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">引导页3</div>
+                </div>
+                <div class="screen-content">
+                    <div class="onboarding-content">
+                        <div class="onboarding-img"></div>
+                        <h2 class="onboarding-title">营养分析</h2>
+                        <p class="onboarding-desc">根据您的饮食习惯，提供个性化的营养建议，帮助您保持健康的生活方式</p>
+                        <div class="dots">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot active"></div>
+                        </div>
+                        <button class="btn">开始使用</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 主页 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">主页</div>
+                </div>
+                <div class="screen-content">
+                    <h3 class="section-title">今日营养摄入</h3>
+                    <div class="nutrition-card">
+                        <div class="nutrition-detail">热量: 1200/2000 千卡</div>
+                        <div class="nutrition-bar">
+                            <div class="nutrition-progress" style="width: 60%;"></div>
+                        </div>
+                        <div class="nutrition-detail">蛋白质: 45/70 克</div>
+                        <div class="nutrition-bar">
+                            <div class="nutrition-progress" style="width: 64%;"></div>
+                        </div>
+                        <div class="nutrition-detail">碳水化合物: 150/250 克</div>
+                        <div class="nutrition-bar">
+                            <div class="nutrition-progress" style="width: 60%;"></div>
+                        </div>
+                        <div class="nutrition-detail">脂肪: 40/65 克</div>
+                        <div class="nutrition-bar">
+                            <div class="nutrition-progress" style="width: 62%;"></div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">今日饮食记录</h3>
+                    <div class="food-item">
+                        <div class="food-img"></div>
+                        <div class="food-info">
+                            <div class="food-name">早餐：全麦面包</div>
+                            <div class="food-nutrition">热量: 220千卡 | 蛋白质: 8克 | 碳水: 40克 | 脂肪: 4克</div>
+                        </div>
+                    </div>
+                    <div class="food-item">
+                        <div class="food-img"></div>
+                        <div class="food-info">
+                            <div class="food-name">午餐：鸡胸肉沙拉</div>
+                            <div class="food-nutrition">热量: 350千卡 | 蛋白质: 30克 | 碳水: 15克 | 脂肪: 18克</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-circle">
+                        <div style="font-size: 24px; color: white;">+</div>
+                    </button>
+                    
+                    <div class="nav-bar">
+                        <div class="nav-item active">
+                            <div class="nav-icon"></div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon"></div>
+                            <div>历史</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon"></div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 拍照页面 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">拍照识别</div>
+                </div>
+                <div class="screen-content" style="background-color: #000; display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; color: white;">
+                        <div style="width: 200px; height: 200px; border: 2px dashed white; border-radius: 10px; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center;">
+                            <div style="font-size: 40px;">+</div>
+                        </div>
+                        <p>请将食物放在框内，点击拍照</p>
+                        <button class="btn" style="margin-top: 30px;">拍照并开始对话</button>
+                        <button class="btn-secondary">从相册选择</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 拍照后的智能对话页面 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">食物识别对话</div>
+                </div>
+                <div class="screen-content">
+                    <div class="nutrition-header" style="margin-bottom: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 10px;">
+                        <div class="nutrition-img"></div>
+                        <div>
+                            <div class="nutrition-title">食物识别中...</div>
+                            <div class="nutrition-detail">我们正在分析您的食物照片</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-container">
+                        <div class="chat-message app">
+                            <div class="chat-bubble">
+                                您好，我已收到您的食物照片。这看起来像是一份沙拉，对吗？
+                            </div>
+                        </div>
+                        <div class="chat-message user">
+                            <div class="chat-bubble">
+                                是的，这是一份鸡胸肉沙拉
+                            </div>
+                        </div>
+                        <div class="chat-message app">
+                            <div class="chat-bubble">
+                                谢谢确认。请问沙拉中有哪些主要食材？例如蔬菜种类、是否有酱料等。
+                            </div>
+                        </div>
+                        <div class="chat-message user">
+                            <div class="chat-bubble">
+                                有生菜、西红柿、黄瓜、鸡胸肉，使用了少量的橄榄油和柠檬汁调味
+                            </div>
+                        </div>
+                        <div class="chat-message app">
+                            <div class="chat-bubble">
+                                好的，根据您提供的信息，我已经更新了营养成分分析。请问鸡胸肉的分量大约是多少？
+                            </div>
+                        </div>
+                        <div class="chat-message user">
+                            <div class="chat-bubble">
+                                大约100克左右
+                            </div>
+                        </div>
+                        <div class="chat-message app">
+                            <div class="chat-bubble">
+                                非常感谢！我已完成分析，这份鸡胸肉沙拉（约100克鸡胸肉）的营养成分如下：<br>
+                                - 热量: 约350千卡<br>
+                                - 蛋白质: 30克<br>
+                                - 碳水化合物: 15克<br>
+                                - 脂肪: 18克<br>
+                                您可以点击下方按钮查看详细信息或添加到今日记录。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-container">
+                        <input type="text" class="chat-input" placeholder="请输入更多食物信息...">
+                        <button class="send-btn">→</button>
+                    </div>
+                    
+                    <div style="position: absolute; bottom: 10px; left: 0; width: 100%; padding: 0 15px;">
+                        <button class="btn">添加到今日记录</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 识别结果页面 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">识别结果</div>
+                </div>
+                <div class="screen-content">
+                    <div class="nutrition-card">
+                        <div class="nutrition-header">
+                            <div class="nutrition-img"></div>
+                            <div>
+                                <div class="nutrition-title">鸡胸肉沙拉</div>
+                                <div class="nutrition-detail">置信度: 85%</div>
+                            </div>
+                        </div>
+                        <div class="nutrition-detail">热量: 350千卡</div>
+                        <div class="nutrition-detail">蛋白质: 30克</div>
+                        <div class="nutrition-detail">碳水化合物: 15克</div>
+                        <div class="nutrition-detail">脂肪: 18克</div>
+                        <div class="nutrition-detail">纤维素: 5克</div>
+                    </div>
+                    
+                    <button class="btn">添加到今日记录</button>
+                    <button class="btn-secondary">重新拍照</button>
+                </div>
+            </div>
+            
+            <!-- 对话追问页面 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">智能对话</div>
+                </div>
+                <div class="screen-content">
+                    <div class="chat-container">
+                        <div class="chat-message app">
+                            <div class="chat-bubble">
+                                您好，我看到您拍摄的是一份食物，但照片有些模糊。这是沙拉吗？
+                            </div>
+                        </div>
+                        <div class="chat-message user">
+                            <div class="chat-bubble">
+                                是的，这是一份鸡胸肉沙拉
+                            </div>
+                        </div>
+                        <div class="chat-message app">
+                            <div class="chat-bubble">
+                                谢谢确认。请问沙拉中有哪些主要食材？例如蔬菜种类、是否有酱料等。
+                            </div>
+                        </div>
+                        <div class="chat-message user">
+                            <div class="chat-bubble">
+                                有生菜、西红柿、黄瓜、鸡胸肉，使用了少量的橄榄油和柠檬汁调味
+                            </div>
+                        </div>
+                        <div class="chat-message app">
+                            <div class="chat-bubble">
+                                好的，根据您提供的信息，我已经更新了营养成分分析。请问鸡胸肉的分量大约是多少？
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-container">
+                        <input type="text" class="chat-input" placeholder="请输入...">
+                        <button class="send-btn">→</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 历史记录页面 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">历史记录</div>
+                </div>
+                <div class="screen-content">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div style="font-weight: 600;">2023年10月</div>
+                        <div style="color: #4CAF50;">查看更多</div>
+                    </div>
+                    
+                    <div class="food-item">
+                        <div class="food-img"></div>
+                        <div class="food-info">
+                            <div class="food-name">10月15日 - 鸡胸肉沙拉</div>
+                            <div class="food-nutrition">热量: 350千卡 | 蛋白质: 30克</div>
+                        </div>
+                    </div>
+                    <div class="food-item">
+                        <div class="food-img"></div>
+                        <div class="food-info">
+                            <div class="food-name">10月15日 - 全麦面包</div>
+                            <div class="food-nutrition">热量: 220千卡 | 蛋白质: 8克</div>
+                        </div>
+                    </div>
+                    <div class="food-item">
+                        <div class="food-img"></div>
+                        <div class="food-info">
+                            <div class="food-name">10月14日 - 水果沙拉</div>
+                            <div class="food-nutrition">热量: 180千卡 | 碳水: 40克</div>
+                        </div>
+                    </div>
+                    <div class="food-item">
+                        <div class="food-img"></div>
+                        <div class="food-info">
+                            <div class="food-name">10月14日 - 烤三文鱼</div>
+                            <div class="food-nutrition">热量: 300千卡 | 蛋白质: 25克</div>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-bar">
+                        <div class="nav-item">
+                            <div class="nav-icon"></div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon"></div>
+                            <div>历史</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon"></div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 个人中心页面 -->
+            <div class="screen">
+                <div class="screen-header">
+                    <div class="screen-title">个人中心</div>
+                </div>
+                <div class="screen-content">
+                    <div class="profile-header">
+                        <div class="profile-avatar"></div>
+                        <div class="profile-name">张小明</div>
+                        <div class="profile-bio">健康饮食，快乐生活</div>
+                    </div>
+                    
+                    <div class="stat-container">
+                        <div class="stat-item">
+                            <div class="stat-value">32</div>
+                            <div class="stat-label">记录天数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">128</div>
+                            <div class="stat-label">食物记录</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">85%</div>
+                            <div class="stat-label">达标率</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">营养摄入趋势</h3>
+                    <div class="chart-container">
+                        <div class="chart-bar" style="height: 60%;"></div>
+                        <div class="chart-bar" style="height: 80%;"></div>
+                        <div class="chart-bar" style="height: 40%;"></div>
+                        <div class="chart-bar" style="height: 70%;"></div>
+                        <div class="chart-bar" style="height: 90%;"></div>
+                        <div class="chart-bar" style="height: 65%;"></div>
+                        <div class="chart-bar" style="height: 75%;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                        <div>周一</div>
+                        <div>周二</div>
+                        <div>周三</div>
+                        <div>周四</div>
+                        <div>周五</div>
+                        <div>周六</div>
+                        <div>周日</div>
+                    </div>
+                    
+                    <h3 class="section-title">设置</h3>
+                    <div style="background-color: #fff; border-radius: 10px; overflow: hidden;">
+                        <div style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                            <div>个人资料</div>
+                            <div style="color: #999;">></div>
+                        </div>
+                        <div style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                            <div>营养目标</div>
+                            <div style="color: #999;">></div>
+                        </div>
+                        <div style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                            <div>通知设置</div>
+                            <div style="color: #999;">></div>
+                        </div>
+                        <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>关于我们</div>
+                            <div style="color: #999;">></div>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-bar">
+                        <div class="nav-item">
+                            <div class="nav-icon"></div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon"></div>
+                            <div>历史</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon"></div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
