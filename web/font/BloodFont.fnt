@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font>
+  <info autoScaleSize="true" size="32" lineHeight="40"/>
+  <chars>
+    <char id="48" x="65" y="0" width="29" height="40" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="49" x="61" y="42" width="21" height="39" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="50" x="0" y="83" width="29" height="39" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="51" x="31" y="83" width="27" height="40" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="52" x="0" y="0" width="31" height="39" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="53" x="60" y="83" width="27" height="40" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="54" x="96" y="0" width="29" height="40" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="55" x="31" y="42" width="28" height="39" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="56" x="33" y="0" width="30" height="40" xoffset="0" yoffset="0" xadvance="28"/>
+    <char id="57" x="0" y="41" width="29" height="40" xoffset="0" yoffset="0" xadvance="28"/>
+  </chars>
+</font>

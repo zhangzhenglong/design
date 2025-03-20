@@ -1,0 +1,153 @@
+
+skeleton.png
+size: 1943, 800
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+2/00000
+  rotate: false
+  xy: 2, 534
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00001
+  rotate: false
+  xy: 2, 534
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00002
+  rotate: false
+  xy: 2, 268
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00003
+  rotate: false
+  xy: 337, 534
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00004
+  rotate: false
+  xy: 2, 2
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00005
+  rotate: false
+  xy: 337, 268
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00006
+  rotate: false
+  xy: 672, 534
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00007
+  rotate: false
+  xy: 672, 534
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00008
+  rotate: false
+  xy: 337, 2
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00009
+  rotate: false
+  xy: 672, 268
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00010
+  rotate: false
+  xy: 1007, 534
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00011
+  rotate: false
+  xy: 672, 2
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00012
+  rotate: false
+  xy: 1007, 268
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00013
+  rotate: false
+  xy: 1007, 268
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00014
+  rotate: false
+  xy: 1342, 534
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00015
+  rotate: false
+  xy: 1007, 2
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00016
+  rotate: false
+  xy: 1342, 268
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00017
+  rotate: true
+  xy: 1677, 465
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00018
+  rotate: false
+  xy: 1342, 2
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00019
+  rotate: false
+  xy: 1342, 2
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
+2/00020
+  rotate: true
+  xy: 1677, 130
+  size: 333, 264
+  orig: 333, 264
+  offset: 0, 0
+  index: -1
