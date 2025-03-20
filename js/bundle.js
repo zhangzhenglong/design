@@ -2943,6 +2943,7 @@
       this.createEnemyBossIndex = 0;
     }
     onStart() {
+      Laya.Stat.show();
       Laya.SketonOptimise.normalRenderSwitch = false;
       this.redFishX = FishRT.instance.entity_root.width / 2;
       this.redFishY = FishRT.instance.entity_root.height / 2;
@@ -2961,7 +2962,6 @@
       this.createEnemiesFromConfig();
       MapMgr.Instance.Init(this.Root);
       CameraMgr.Inst.Init(this.Root);
-      Laya.Physics2D.I.stop();
     }
     createEnemiesFromConfig() {
       let index = 0;
@@ -3282,13 +3282,6 @@
         this.heroFish.x = 8e4 - displayWid;
       if (this.heroFish.y >= 8e4 - displayHeight)
         this.heroFish.y = 8e4 - displayHeight;
-      this.box_spine.rotation = 180 + this.angle;
-      let rotation = this.box_spine.rotation % 360;
-      if (rotation >= 90 && rotation <= 235) {
-        this.box_spine.scaleY = -1;
-      } else {
-        this.box_spine.scaleY = 1;
-      }
     }
     /** 
     * 获得两个坐标点的直线距离，
