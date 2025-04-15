@@ -478,6 +478,91 @@
                     
                     <button class="btn" id="next-btn">下一步</button>
                 </div>
+                
+                <div class="survey-section" id="section-5" style="display: none;">
+                    <h3>活动水平</h3>
+                    <div class="form-group">
+                        <label>您的日常活动水平如何？</label>
+                        <select class="form-control" id="activity-level">
+                            <option value="sedentary">久坐不动（几乎不运动）</option>
+                            <option value="light">轻度活动（每周1-3次轻度运动）</option>
+                            <option value="moderate">中度活动（每周3-5次中等强度运动）</option>
+                            <option value="active">活跃（每周6-7次运动）</option>
+                            <option value="very-active">非常活跃（每天高强度运动或体力劳动）</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary next-btn">下一步</button>
+                </div>
+                
+                <div class="survey-section" id="section-6" style="display: none;">
+                    <h3>睡眠规律</h3>
+                    <div class="form-group">
+                        <label>您通常几点入睡？</label>
+                        <input type="time" class="form-control" id="sleep-time" value="22:30">
+                    </div>
+                    <div class="form-group">
+                        <label>您通常几点起床？</label>
+                        <input type="time" class="form-control" id="wake-time" value="07:00">
+                    </div>
+                    <div class="form-group">
+                        <label>您的睡眠质量如何？</label>
+                        <select class="form-control" id="sleep-quality">
+                            <option value="excellent">非常好</option>
+                            <option value="good">良好</option>
+                            <option value="average" selected>一般</option>
+                            <option value="poor">较差</option>
+                            <option value="very-poor">非常差</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>您是否有午休习惯？</label>
+                        <select class="form-control" id="nap-habit">
+                            <option value="no">没有</option>
+                            <option value="sometimes">偶尔</option>
+                            <option value="often">经常</option>
+                            <option value="always">每天都有</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary next-btn">下一步</button>
+                </div>
+                
+                <div class="survey-section" id="section-7" style="display: none;">
+                    <h3>日常安排</h3>
+                    <div class="form-group">
+                        <label>您的工作/学习时间是？</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="time" class="form-control" id="work-start-time" value="09:00" placeholder="开始时间">
+                            </div>
+                            <div class="col-6">
+                                <input type="time" class="form-control" id="work-end-time" value="18:00" placeholder="结束时间">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>您通常几点吃早餐？</label>
+                        <input type="time" class="form-control" id="breakfast-time" value="07:30">
+                    </div>
+                    <div class="form-group">
+                        <label>您通常几点吃午餐？</label>
+                        <input type="time" class="form-control" id="lunch-time" value="12:00">
+                    </div>
+                    <div class="form-group">
+                        <label>您通常几点吃晚餐？</label>
+                        <input type="time" class="form-control" id="dinner-time" value="18:30">
+                    </div>
+                    <div class="form-group">
+                        <label>您是否有固定的运动时间？</label>
+                        <select class="form-control" id="exercise-time-fixed">
+                            <option value="no">没有固定时间</option>
+                            <option value="morning">早上</option>
+                            <option value="noon">中午</option>
+                            <option value="afternoon">下午</option>
+                            <option value="evening">晚上</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="submit-survey">提交问卷</button>
+                </div>
             </div>
             
             <!-- 方案部分 -->
@@ -727,37 +812,100 @@
             console.log('NutriLife应用已初始化');
         });
         
-        // 问卷下一步按钮
-        document.getElementById('next-btn').addEventListener('click', function() {
-            // 获取当前问卷步骤
-            const currentStep = parseInt(document.querySelector('.progress-text span:last-child').textContent.split('/')[0]);
-            const nextStep = currentStep + 1;
-            
-            // 获取表单数据
-            const formData = {};
-            if (currentStep === 1) {
-                // 基本信息
-                formData.gender = document.querySelector('.radio-item.selected').textContent.trim();
-                formData.age = document.querySelector('input[placeholder="请输入您的年龄"]').value;
-                formData.height = document.querySelector('input[placeholder="请输入您的身高"]').value;
-                formData.weight = document.querySelector('input[placeholder="请输入您的体重"]').value;
+        // 问卷处理逻辑
+        let currentSection = 1;
+        
+        // 下一步按钮点击事件
+        document.querySelectorAll('.next-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // 隐藏当前部分
+                document.getElementById(`section-${currentSection}`).style.display = 'none';
                 
-                // 更新用户基本信息
-                NutriLifeAI.updateBasicInfo(formData);
-            }
+                // 显示下一部分
+                currentSection++;
+                document.getElementById(`section-${currentSection}`).style.display = 'block';
+            });
+        });
+        
+        // 提交问卷按钮点击事件
+        document.getElementById('submit-survey').addEventListener('click', function() {
+            // 收集问卷数据
+            const userData = {
+                basicInfo: {
+                    age: document.getElementById('age').value,
+                    gender: document.getElementById('gender').value,
+                    height: document.getElementById('height').value,
+                    weight: document.getElementById('weight').value
+                },
+                dietaryPreferences: {
+                    preferredFoods: document.getElementById('preferred-foods').value.split(','),
+                    dislikedFoods: document.getElementById('disliked-foods').value.split(','),
+                    cuisinePreference: document.getElementById('cuisine-preference').value
+                },
+                healthGoals: {
+                    primaryGoal: document.getElementById('primary-goal').value,
+                    targetWeight: document.getElementById('target-weight').value,
+                    timeframe: document.getElementById('timeframe').value
+                },
+                restrictions: {
+                    allergies: document.getElementById('allergies').value.split(','),
+                    medicalConditions: document.getElementById('medical-conditions').value.split(','),
+                    dietaryRestrictions: document.getElementById('dietary-restrictions').value
+                },
+                activityLevel: {
+                    exerciseFrequency: document.getElementById('exercise-frequency').value,
+                    exerciseIntensity: document.getElementById('exercise-intensity').value,
+                    exerciseType: document.getElementById('exercise-type').value,
+                    activityLevel: document.getElementById('activity-level').value
+                },
+                sleepPattern: {
+                    sleepTime: document.getElementById('sleep-time').value,
+                    wakeTime: document.getElementById('wake-time').value,
+                    sleepQuality: document.getElementById('sleep-quality').value,
+                    napHabit: document.getElementById('nap-habit').value
+                },
+                dailySchedule: {
+                    workStartTime: document.getElementById('work-start-time').value,
+                    workEndTime: document.getElementById('work-end-time').value,
+                    breakfastTime: document.getElementById('breakfast-time').value,
+                    lunchTime: document.getElementById('lunch-time').value,
+                    dinnerTime: document.getElementById('dinner-time').value,
+                    exerciseTimePreference: document.getElementById('exercise-time-fixed').value
+                }
+            };
             
-            // 更新进度
-            document.querySelector('.progress-fill').style.width = `${nextStep * 20}%`;
-            document.querySelector('.progress-text span:last-child').textContent = `${nextStep}/5`;
-            
-            // 使用AI生成下一步问题
-            NutriLifeAI.generateQuestions(nextStep).then(questions => {
-                // 这里可以根据AI返回的问题更新问卷内容
-                console.log('AI生成的问题:', questions);
-                alert(`问卷进入第${nextStep}步！\n\nAI生成的问题示例:\n${questions.substring(0, 100)}...`);
-            }).catch(error => {
-                console.error('生成问题失败:', error);
-                alert('生成问题失败，请稍后再试');
+            // 问卷下一步按钮
+            document.getElementById('next-btn').addEventListener('click', function() {
+                // 获取当前问卷步骤
+                const currentStep = parseInt(document.querySelector('.progress-text span:last-child').textContent.split('/')[0]);
+                const nextStep = currentStep + 1;
+                
+                // 获取表单数据
+                const formData = {};
+                if (currentStep === 1) {
+                    // 基本信息
+                    formData.gender = document.querySelector('.radio-item.selected').textContent.trim();
+                    formData.age = document.querySelector('input[placeholder="请输入您的年龄"]').value;
+                    formData.height = document.querySelector('input[placeholder="请输入您的身高"]').value;
+                    formData.weight = document.querySelector('input[placeholder="请输入您的体重"]').value;
+                    
+                    // 更新用户基本信息
+                    NutriLifeAI.updateBasicInfo(formData);
+                }
+                
+                // 更新进度
+                document.querySelector('.progress-fill').style.width = `${nextStep * 20}%`;
+                document.querySelector('.progress-text span:last-child').textContent = `${nextStep}/5`;
+                
+                // 使用AI生成下一步问题
+                NutriLifeAI.generateQuestions(nextStep).then(questions => {
+                    // 这里可以根据AI返回的问题更新问卷内容
+                    console.log('AI生成的问题:', questions);
+                    alert(`问卷进入第${nextStep}步！\n\nAI生成的问题示例:\n${questions.substring(0, 100)}...`);
+                }).catch(error => {
+                    console.error('生成问题失败:', error);
+                    alert('生成问题失败，请稍后再试');
+                });
             });
         });
         
@@ -784,7 +932,11 @@
                     protein: 25,
                     carbs: 15,
                     fat: 10
-                }
+                },
+                mood: '精力充沛',
+                hunger: '适中',
+                location: '家里',
+                companions: '独自一人'
             };
             
             // 使用AI分析饮食记录
@@ -804,7 +956,15 @@
                 weightChange: -0.5,
                 completionRate: 80,
                 challenges: ['控制晚餐碳水摄入', '增加蛋白质摄入'],
-                achievements: ['坚持每周3次有氧运动', '增加了水果蔬菜摄入']
+                achievements: ['坚持每周3次有氧运动', '增加了水果蔬菜摄入'],
+                sleepQualityChange: '改善',
+                energyLevelChange: '提高',
+                moodChange: '更稳定',
+                scheduleChanges: {
+                    workHoursChanged: true,
+                    newWakeTime: '06:30',
+                    newSleepTime: '22:30'
+                }
             };
             
             // 显示加载提示
@@ -838,12 +998,26 @@
         window.aiModule = {
             // 分析用户问卷数据并生成方案
             analyzeSurvey: function(userData) {
-                return NutriLifeAI.analyzeSurvey(userData);
+                // 更新用户数据
+                NutriLifeAI.updateBasicInfo(userData.basicInfo);
+                NutriLifeAI.updateDietaryPreferences(userData.dietaryPreferences);
+                NutriLifeAI.updateHealthGoals(userData.healthGoals);
+                NutriLifeAI.updateRestrictions(userData.restrictions);
+                NutriLifeAI.updateActivityLevel(userData.activityLevel);
+                NutriLifeAI.updateSleepPattern(userData.sleepPattern);
+                NutriLifeAI.updateDailySchedule(userData.dailySchedule);
+                
+                return NutriLifeAI.analyzeSurvey();
             },
             
             // 分析用户的饮食记录并给出建议
             analyzeMealLog: function(mealData) {
                 return NutriLifeAI.analyzeMealLog(mealData);
+            },
+            
+            // 分析用户的运动记录并给出建议
+            analyzeExerciseLog: function(exerciseData) {
+                return NutriLifeAI.analyzeExerciseLog(exerciseData);
             },
             
             // 生成周期性报告

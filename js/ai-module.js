@@ -18,7 +18,12 @@ const NutriLifeAI = (function() {
         dietaryPreferences: {},
         healthGoals: {},
         restrictions: {},
-        activityLevel: {}
+        activityLevel: {},
+        sleepPattern: {},      // 睡眠规律数据
+        dailySchedule: {},     // 日常活动安排
+        mealHistory: [],       // 饮食历史记录
+        exerciseHistory: [],   // 运动历史记录
+        progressData: {}       // 进度数据
     };
 
     /**
@@ -103,6 +108,62 @@ const NutriLifeAI = (function() {
         userData.activityLevel = {...userData.activityLevel, ...activityLevel};
         saveUserData();
         return userData.activityLevel;
+    }
+    
+    /**
+     * 更新用户睡眠规律
+     * @param {Object} sleepPattern - 用户睡眠规律数据
+     */
+    function updateSleepPattern(sleepPattern) {
+        userData.sleepPattern = {...userData.sleepPattern, ...sleepPattern};
+        saveUserData();
+        return userData.sleepPattern;
+    }
+    
+    /**
+     * 更新用户日常活动安排
+     * @param {Object} dailySchedule - 用户日常活动安排
+     */
+    function updateDailySchedule(dailySchedule) {
+        userData.dailySchedule = {...userData.dailySchedule, ...dailySchedule};
+        saveUserData();
+        return userData.dailySchedule;
+    }
+    
+    /**
+     * 添加饮食记录到历史
+     * @param {Object} mealRecord - 饮食记录
+     */
+    function addMealRecord(mealRecord) {
+        userData.mealHistory.push({...mealRecord, timestamp: new Date().toISOString()});
+        if (userData.mealHistory.length > 100) { // 限制历史记录数量
+            userData.mealHistory = userData.mealHistory.slice(-100);
+        }
+        saveUserData();
+        return userData.mealHistory;
+    }
+    
+    /**
+     * 添加运动记录到历史
+     * @param {Object} exerciseRecord - 运动记录
+     */
+    function addExerciseRecord(exerciseRecord) {
+        userData.exerciseHistory.push({...exerciseRecord, timestamp: new Date().toISOString()});
+        if (userData.exerciseHistory.length > 100) { // 限制历史记录数量
+            userData.exerciseHistory = userData.exerciseHistory.slice(-100);
+        }
+        saveUserData();
+        return userData.exerciseHistory;
+    }
+    
+    /**
+     * 更新用户进度数据
+     * @param {Object} progressData - 进度数据
+     */
+    function updateProgressData(progressData) {
+        userData.progressData = {...userData.progressData, ...progressData};
+        saveUserData();
+        return userData.progressData;
     }
 
     /**
@@ -250,21 +311,32 @@ const NutriLifeAI = (function() {
         健康目标：${JSON.stringify(userData.healthGoals)}
         饮食限制：${JSON.stringify(userData.restrictions)}
         活动水平：${JSON.stringify(userData.activityLevel)}
+        睡眠规律：${JSON.stringify(userData.sleepPattern)}
+        日常安排：${JSON.stringify(userData.dailySchedule)}
         
         请提供以下内容：
-        1. 每日饮食建议（包括具体的食物选择、份量和营养素分配）
-        2. 运动建议（根据用户目标和当前活动水平）
-        3. 生活习惯调整建议
-        4. 每周进度跟踪指标
+        1. 详细的每日饮食计划，精确到每一餐（早餐、午餐、晚餐和加餐）的具体食物、份量和营养素分配
+        2. 根据用户的睡眠规律和日常安排，为每餐提供最佳的时间安排
+        3. 针对用户健康目标的个性化运动建议，包括具体的运动类型、时长、频率和最佳时间
+        4. 生活习惯调整建议
+        5. 详细的每周进度跟踪指标
         
-        请确保建议是具体、可行的，并考虑用户的所有限制和偏好。
+        请确保建议是具体、可行的，并考虑用户的所有限制和偏好。方案应该足够详细，让用户可以直接按照计划执行。
         `;
 
         try {
             // 这里可以使用流式响应来逐步显示生成的方案
             let plan = {
-                dietPlan: '',
-                exercisePlan: '',
+                dietPlan: {
+                    breakfast: { foods: [], timing: '', nutrients: {} },
+                    lunch: { foods: [], timing: '', nutrients: {} },
+                    dinner: { foods: [], timing: '', nutrients: {} },
+                    snacks: [{ foods: [], timing: '', nutrients: {} }]
+                },
+                exercisePlan: {
+                    daily: [],
+                    weekly: []
+                },
                 lifestyleTips: '',
                 trackingMetrics: ''
             };
@@ -275,26 +347,66 @@ const NutriLifeAI = (function() {
             if (response && response.candidates && response.candidates[0].content.parts) {
                 const text = response.candidates[0].content.parts[0].text;
                 
-                // 简单解析文本以提取各部分内容
-                // 实际应用中可能需要更复杂的解析逻辑
-                if (text.includes('每日饮食建议')) {
-                    plan.dietPlan = text.split('每日饮食建议')[1].split('运动建议')[0].trim();
-                }
-                
-                if (text.includes('运动建议')) {
-                    plan.exercisePlan = text.split('运动建议')[1].split('生活习惯调整')[0].trim();
-                }
-                
-                if (text.includes('生活习惯调整')) {
-                    plan.lifestyleTips = text.split('生活习惯调整')[1].split('每周进度跟踪')[0].trim();
-                }
-                
-                if (text.includes('每周进度跟踪')) {
-                    plan.trackingMetrics = text.split('每周进度跟踪')[1].trim();
+                // 尝试解析更详细的结构化数据
+                try {
+                    // 解析饮食计划
+                    if (text.includes('早餐')) {
+                        const breakfastSection = text.split('早餐')[1].split(/午餐|晚餐|加餐|运动建议/)[0].trim();
+                        plan.dietPlan.breakfast = {
+                            foods: extractFoodItems(breakfastSection),
+                            timing: extractTiming(breakfastSection),
+                            nutrients: extractNutrients(breakfastSection)
+                        };
+                    }
+                    
+                    if (text.includes('午餐')) {
+                        const lunchSection = text.split('午餐')[1].split(/晚餐|加餐|运动建议/)[0].trim();
+                        plan.dietPlan.lunch = {
+                            foods: extractFoodItems(lunchSection),
+                            timing: extractTiming(lunchSection),
+                            nutrients: extractNutrients(lunchSection)
+                        };
+                    }
+                    
+                    if (text.includes('晚餐')) {
+                        const dinnerSection = text.split('晚餐')[1].split(/加餐|运动建议/)[0].trim();
+                        plan.dietPlan.dinner = {
+                            foods: extractFoodItems(dinnerSection),
+                            timing: extractTiming(dinnerSection),
+                            nutrients: extractNutrients(dinnerSection)
+                        };
+                    }
+                    
+                    if (text.includes('加餐')) {
+                        const snacksSection = text.split('加餐')[1].split(/运动建议/)[0].trim();
+                        plan.dietPlan.snacks = [{
+                            foods: extractFoodItems(snacksSection),
+                            timing: extractTiming(snacksSection),
+                            nutrients: extractNutrients(snacksSection)
+                        }];
+                    }
+                    
+                    // 解析运动建议
+                    if (text.includes('运动建议')) {
+                        const exerciseSection = text.split('运动建议')[1].split('生活习惯调整')[0].trim();
+                        plan.exercisePlan = parseExercisePlan(exerciseSection);
+                    }
+                    
+                    // 解析生活习惯调整
+                    if (text.includes('生活习惯调整')) {
+                        plan.lifestyleTips = text.split('生活习惯调整')[1].split('每周进度跟踪')[0].trim();
+                    }
+                    
+                    // 解析进度跟踪
+                    if (text.includes('每周进度跟踪')) {
+                        plan.trackingMetrics = text.split('每周进度跟踪')[1].trim();
+                    }
+                } catch (e) {
+                    console.error('解析方案失败:', e);
                 }
                 
                 // 如果解析失败，则使用完整文本
-                if (!plan.dietPlan && !plan.exercisePlan && !plan.lifestyleTips) {
+                if (!plan.dietPlan.breakfast.foods.length && !plan.dietPlan.lunch.foods.length && !plan.lifestyleTips) {
                     plan = {
                         fullPlan: text
                     };
@@ -311,24 +423,111 @@ const NutriLifeAI = (function() {
     }
 
     /**
+     * 辅助函数：从文本中提取食物项目
+     * @param {String} text - 文本内容
+     * @returns {Array} - 食物项目数组
+     */
+    function extractFoodItems(text) {
+        const foodItems = [];
+        // 简单的提取逻辑，实际应用中可能需要更复杂的解析
+        const lines = text.split('\n');
+        for (const line of lines) {
+            if (line.includes('：') || line.includes(':')) {
+                const parts = line.split(/：|:/)[1];
+                if (parts) {
+                    const items = parts.split(/[,，、]/).map(item => item.trim()).filter(Boolean);
+                    foodItems.push(...items);
+                }
+            }
+        }
+        return foodItems;
+    }
+    
+    /**
+     * 辅助函数：从文本中提取时间信息
+     * @param {String} text - 文本内容
+     * @returns {String} - 时间信息
+     */
+    function extractTiming(text) {
+        // 查找时间相关的信息
+        const timeRegex = /(\d{1,2}[:.：]\d{1,2}|早上|上午|中午|下午|晚上|[0-9一二三四五六七八九十]+点)/;
+        const match = text.match(timeRegex);
+        return match ? match[0] : '';
+    }
+    
+    /**
+     * 辅助函数：从文本中提取营养素信息
+     * @param {String} text - 文本内容
+     * @returns {Object} - 营养素信息
+     */
+    function extractNutrients(text) {
+        const nutrients = {};
+        const nutrientRegex = /(蛋白质|碳水化合物|脂肪|热量|卡路里|蛋白|碳水|维生素|矿物质)[:：]?\s*([\d.]+)\s*(克|千卡|g|kcal|%)/gi;
+        let match;
+        while ((match = nutrientRegex.exec(text)) !== null) {
+            const name = match[1];
+            const value = parseFloat(match[2]);
+            const unit = match[3];
+            nutrients[name] = { value, unit };
+        }
+        return nutrients;
+    }
+    
+    /**
+     * 辅助函数：解析运动计划
+     * @param {String} text - 文本内容
+     * @returns {Object} - 运动计划
+     */
+    function parseExercisePlan(text) {
+        const plan = {
+            daily: [],
+            weekly: []
+        };
+        
+        const lines = text.split('\n');
+        let currentSection = 'daily';
+        
+        for (const line of lines) {
+            if (line.toLowerCase().includes('每周') || line.toLowerCase().includes('weekly')) {
+                currentSection = 'weekly';
+                continue;
+            }
+            
+            if (line.trim() && !line.includes('运动建议') && !line.includes('Exercise')) {
+                plan[currentSection].push(line.trim());
+            }
+        }
+        
+        return plan;
+    }
+    
+    /**
      * 分析用户的饮食记录并给出建议
      * @param {Object} mealData - 饮食记录数据
      * @returns {Promise} - 饮食建议
      */
     async function analyzeMealLog(mealData) {
+        // 添加到历史记录
+        addMealRecord(mealData);
+        
         const prompt = `
         请分析以下用户的饮食记录，并给出针对性的建议：
         
         用户基本信息：${JSON.stringify(userData.basicInfo)}
         用户健康目标：${JSON.stringify(userData.healthGoals)}
         用户饮食限制：${JSON.stringify(userData.restrictions)}
+        用户睡眠规律：${JSON.stringify(userData.sleepPattern)}
+        用户日常安排：${JSON.stringify(userData.dailySchedule)}
         
-        饮食记录：${JSON.stringify(mealData)}
+        当前饮食记录：${JSON.stringify(mealData)}
+        历史饮食记录（最近3条）：${JSON.stringify(userData.mealHistory.slice(-3))}
         
         请提供：
-        1. 这餐饮食的营养评价
-        2. 针对用户健康目标的改进建议
-        3. 鼓励性的反馈
+        1. 这餐饮食的详细营养评价（包括宏量营养素分析）
+        2. 针对用户健康目标的具体改进建议
+        3. 与用户当前计划的符合度评估
+        4. 下一餐的具体建议（包括食物选择、份量和最佳时间）
+        5. 鼓励性的反馈
         `;
 
         try {
@@ -352,19 +551,27 @@ const NutriLifeAI = (function() {
      * @returns {Promise} - 运动建议
      */
     async function analyzeExerciseLog(exerciseData) {
+        // 添加到历史记录
+        addExerciseRecord(exerciseData);
+        
         const prompt = `
         请分析以下用户的运动记录，并给出针对性的建议：
         
         用户基本信息：${JSON.stringify(userData.basicInfo)}
         用户健康目标：${JSON.stringify(userData.healthGoals)}
         用户活动水平：${JSON.stringify(userData.activityLevel)}
+        用户睡眠规律：${JSON.stringify(userData.sleepPattern)}
+        用户日常安排：${JSON.stringify(userData.dailySchedule)}
         
-        运动记录：${JSON.stringify(exerciseData)}
+        当前运动记录：${JSON.stringify(exerciseData)}
+        历史运动记录（最近3条）：${JSON.stringify(userData.exerciseHistory.slice(-3))}
         
         请提供：
-        1. 这次运动的评价
-        2. 针对用户健康目标的改进建议
-        3. 鼓励性的反馈
+        1. 这次运动的详细评价（包括强度、持续时间、消耗热量等分析）
+        2. 针对用户健康目标的具体改进建议
+        3. 与用户当前计划的符合度评估
+        4. 下一次运动的具体建议（包括运动类型、强度、持续时间和最佳时间）
+        5. 鼓励性的反馈
         `;
 
         try {
@@ -436,6 +643,9 @@ const NutriLifeAI = (function() {
      * @returns {Promise} - 更新后的方案
      */
     async function updatePlan(userProgress) {
+        // 更新进度数据
+        updateProgressData(userProgress);
+        
         const prompt = `
         请根据以下用户的进度数据，更新其个性化营养方案：
         
@@ -443,14 +653,21 @@ const NutriLifeAI = (function() {
         用户健康目标：${JSON.stringify(userData.healthGoals)}
         用户饮食限制：${JSON.stringify(userData.restrictions)}
         用户活动水平：${JSON.stringify(userData.activityLevel)}
+        用户睡眠规律：${JSON.stringify(userData.sleepPattern)}
+        用户日常安排：${JSON.stringify(userData.dailySchedule)}
         
         进度数据：${JSON.stringify(userProgress)}
+        历史饮食记录：${JSON.stringify(userData.mealHistory.slice(-5))}
+        历史运动记录：${JSON.stringify(userData.exerciseHistory.slice(-5))}
         
-        请提供更新后的：
-        1. 每日饮食建议
-        2. 运动建议
+        请提供更新后的详细方案：
+        1. 详细的每日饮食计划，精确到每一餐（早餐、午餐、晚餐和加餐）的具体食物、份量、营养素分配和最佳时间
+        2. 针对用户健康目标和当前进度的个性化运动建议，包括具体的运动类型、时长、频率和最佳时间
         3. 生活习惯调整建议
-        4. 调整的理由
+        4. 详细的调整理由，解释为什么需要这些变化
+        5. 新的进度跟踪指标
+        
+        请确保方案是具体、可行的，并考虑用户的所有限制、偏好和进度数据。方案应该足够详细，让用户可以直接按照计划执行。
         `;
 
         try {
@@ -476,6 +693,11 @@ const NutriLifeAI = (function() {
         updateHealthGoals,
         updateRestrictions,
         updateActivityLevel,
+        updateSleepPattern,
+        updateDailySchedule,
+        addMealRecord,
+        addExerciseRecord,
+        updateProgressData,
         generateQuestions,
         analyzeSurvey,
         analyzeMealLog,
