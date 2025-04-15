@@ -7,7 +7,7 @@
 const NutriLifeAI = (function() {
     // 配置参数
     const config = {
-        apiKey: 'AIzaSyCdRwOjykzcPS7o-jmGO4Gy-IzAGMKsk9I', // 需要设置你的Gemini API Key
+        apiKey: '', // 需要设置你的Gemini API Key
         apiEndpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent',
         streamingEndpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:streamGenerateContent'
     };
