@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nutrition Visit</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 81px 55px 55px;
+
+            @bottom-center {
+                content: element(footer);
+            }
+
+            @top-right {
+                content: element(header);
+            }
+        }
+
+        @media print {
+            body {
+                margin: 55px;
+            }
+        }
+
+
+        * {
+            font-family: apple-system, BlinkMacSystemFont, Helvetica Neue, Tahoma, PingFang SC, Microsoft Yahei, Arial, Hiragino Sans GB, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
+            font-size: 12px;
+        }
+
+        .minHeight {
+            min-height: 350px;
+        }
+
+        body {
+            margin: 0;
+        }
+
+
+        #pagenumber:before {
+            content: counter(page);
+        }
+
+        #pagecount:before {
+            content: counter(pages);
+        }
+
+        .paper {
+        }
+
+        .wrap {
+            box-sizing: border-box;
+        }
+
+        .content {
+            width: 100%;
+            background-color: white;
+            box-sizing: border-box;
+        }
+
+        .content .title {
+            color: #000000;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: LEFT;
+            margin-bottom: 15px;
+            line-height: 12px;
+        }
+
+        .margin-right-0 {
+            margin-right: 0 !important;
+        }
+
+        .margin-top-20 {
+            margin-top: 20px !important;
+        }
+
+        .block {
+            padding: 12px 0;
+            border-bottom: 1px solid #b7b7b7;
+            overflow: hidden;
+        }
+
+
+        .block-bottom-0 {
+            padding-bottom: 0;
+        }
+
+        .block:last-child {
+            border-bottom: none;
+        }
+
+        .block .subtitle {
+            font-size: 12px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 11px;
+        }
+
+        .block .text,
+        .block .line-wrap .text-item {
+            font-size: 10px;
+            color: #2a2b2f;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .block .text strong {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .block table {
+            width: 100%;
+            background-color: #333;
+        }
+
+        .block table td {
+            background-color: #fff;
+            font-size: 14px;
+            color: #2a2b2f;
+            text-align: center;
+            height: 25px;
+            line-height: 25px;
+        }
+
+        .block table td span {
+            display: inline-block;
+            width: 30px;
+        }
+
+        .block table tr td:nth-child(1) {
+            width: 12%;
+        }
+
+        .block table tr td:nth-child(2) {
+            width: 27%;
+        }
+
+        .block table tr td:nth-child(3) {
+            width: 21%;
+        }
+
+        .block table tr td:nth-child(4) {
+            width: 18%;
+        }
+
+        .block table tr td:nth-child(5) {
+            width: 22%;
+        }
+
+        .block .info .info-row {
+            overflow: hidden;
+        }
+
+        .block ul {
+            padding-left: 0px;
+            list-style-type: none;
+        }
+
+        .block ul li {
+            margin-bottom: 5px;
+        }
+
+
+        .block .info .info-row .text {
+            float: left;
+        }
+
+        .block .info .info-row .checkbox {
+            height: 14px;
+            width: 14px;
+            border: 1px solid #c0c3ce;
+            border-radius: 2px;
+            float: left;
+            margin-right: 5px;
+        }
+
+        .block .info .info-row .text-right-10 {
+            float: left;
+            margin-right: 10px;
+        }
+
+        .block .info .info-row .text-right-14 {
+            float: left;
+            margin-right: 14px;
+        }
+
+        .block .info .info-row .text-right-36 {
+            float: left;
+            margin-right: 36px;
+        }
+
+        .block .info .info-row .text-right-45 {
+            float: left;
+            margin-right: 45px !important;
+        }
+
+        .block .info .info-row .float-right {
+            float: right;
+            margin-right: 0;
+        }
+
+        .block .info .info-row .text .text-line {
+            display: inline-block;
+            width: 120px;
+            border-bottom: 1px solid #2a2b2f;
+            margin-right: 8px;
+        }
+
+        .block .block__item--left {
+            width: calc(595px - 360px - 20px);
+            float: left;
+        }
+
+        .block .block__item--right {
+            position: relative;
+            float: right;
+        }
+
+        .block .time {
+            font-size: 8px;
+            color: #666666;
+            font-weight: 400;
+            margin-left: 2px;
+        }
+
+        .line-wrap {
+            display: block;
+            white-space: pre-line;
+            line-height: 25px;
+            font-size: 10px;
+            color: #2a2b2f;
+        }
+
+
+        .vitalArea span {
+            color: #666666;
+        }
+
+        .vitalArea .vitalTitle {
+            color: #333;
+        }
+
+        .vitalArea .item {
+            margin-bottom: 10px;
+        }
+
+        .flexWrap {
+            flex-wrap: wrap;
+        }
+
+        .header {
+            position: running(header);
+            padding-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .header .exportHead {
+            padding: 20px 0;
+            border-bottom: 3px solid #55BCBE;
+        }
+
+        .header .exportHead :after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .header .exportHead .logo {
+            float: left;
+            width: 180px;
+        }
+
+        .header .head-content {
+            float: right;
+        }
+
+        .header .head-content :after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .header .head-content div {
+            float: left;
+        }
+
+        .header .head-content .userName {
+            font-weight: bold;
+            float: left;
+        }
+
+        .header .head-content .text {
+            margin-left: 15px;
+            float: left;
+        }
+
+        .footer {
+            padding: 10px 0;
+            font-size: 10px;
+            border-top: 3px solid #55BCBE;
+            color: #000;
+            position: running(footer);
+            box-sizing: border-box;
+        }
+
+        .footer:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .footer .footer-time {
+            float: left;
+        }
+
+        .footer .footer-page {
+            float: right;
+        }
+
+        .exportUser-box {
+            font-size: 10px;
+            margin-top: 15px;
+        }
+
+        .signature {
+            width: 100%;
+        }
+
+        .signature.text {
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .signature:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .signature .signature-left {
+            float: left;
+            width: 40%;
+        }
+
+        .signature .signature-right {
+            float: right;
+            text-align: right;
+            width: 59%;
+        }
+
+        .vitalArea span {
+            color: #666666;
+        }
+
+        .vitalArea .vitalTitle {
+            color: #333;
+        }
+
+        .vitalArea .item {
+            margin-bottom: 10px;
+        }
+
+        .medications-name {
+            font-weight: bold;
+            margin-right: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="paper" id="paper">
+    <div class="wrap">
+        <div class="header">
+            <div class="exportHead">
+                <img src="data:image/png;base64,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"
+                     class="logo"/>
+                <div class="head-content">
+                    <div class="userName" th:text="${data.header.name}"></div>
+                    <div class="text" th:text="${data.header.birthday}"></div>
+                    <div class="text" th:text="${data.header.phoneNumber}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-time">
+                <span>Report generated at: </span>
+                <span th:text="${data.header.exportTime}"></span>
+            </div>
+            <div class="footer-page">
+                <span>Page </span><span id="pagenumber"></span><span> of </span><span id="pagecount"></span>
+            </div>
+        </div>
+        <div class="content">
+
+            <div class="block">
+                <div class="title">
+                    Nutrition Assessment and Intervention
+                </div>
+
+            </div>
+
+            <div class="block">
+                <div class="subtitle">Nutrition Assessment</div>
+                <div th:with="nutritionAssessment=${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).jsonToObj(data.visitNotesSdkVo.nutritionAssessment)}">
+                    <!-- Visit Duration (随访时长) -->
+                    <div class="text">
+                        <strong>Visit Duration: </strong>
+                        <span th:if="${nutritionAssessment != null and nutritionAssessment.visitDuration != null}"
+                              th:text="${nutritionAssessment.visitDuration}">
+                        </span>
+                        <span th:if="${nutritionAssessment == null or nutritionAssessment.visitDuration == null}">
+                            None
+                        </span>
+                    </div>
+                    <!-- Referring Physician (转诊医生) -->
+                    <div class="text">
+                        <strong>Referring Provider: </strong>
+                        <span th:if="${nutritionAssessment != null and nutritionAssessment.getString('referringName') != null}"
+                              th:text="${nutritionAssessment.getString('referringName')}">
+                        </span>
+                        <span th:if="${nutritionAssessment == null or nutritionAssessment.getString('referringName') == null}">
+                            Not specified
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Vitals (指标) -->
+            <div class="block vitalArea" th:if="${data.visitNotesSdkVo.vitals != null and data.visitNotesSdkVo.vitals !='[]'}">
+                <div class="subtitle">Vitals</div>
+                <div>
+                    <div th:each="item,iter : ${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).jsonArrToObj(data.visitNotesSdkVo.vitals)}">
+                        <div>
+                            <span class="time"
+                                  th:text="${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).format(item.date,'MM/dd/yyyy',data.zoneId)}"></span>
+                            <span th:if="${data.header.createName}" class="time">By </span>
+                            <span class="time" style="margin-left: 5px;" th:if="${data.header.createName}"
+                                  th:text="${data.header.createName}">
+                            </span>
+                        </div>
+                        <div class="item" th:if="${item.indicator.containsKey('weight')} and ${item.indicator.weight}">
+                            <span class="vitalTitle">weight: </span>
+                            <span th:text="${item.indicator.weight.values[0].value }"></span>
+                            <span> pounds </span>
+                        </div>
+                        <div class="item" th:if="${item.indicator.containsKey('height')} and ${item.indicator.height}">
+                            <span class="vitalTitle">height: </span>
+                            <span th:text="${item.indicator.height.values[0].value }"></span>
+                            <span> ft </span>
+                        </div>
+                        <div class="item" th:if="${item.indicator.containsKey('bmi')} and ${item.indicator.bmi}">
+                            <span class="vitalTitle">BMI: </span>
+                            <span th:text="${item.indicator.bmi.values[0].value }"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Patient States (患者陈述 / 患者自述) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.patientStatement != null and !#strings.isEmpty(data.visitNotesSdkVo.patientStatement)}">
+                <div class="subtitle">Patient States</div>
+                <div th:utext="${#strings.replace(data.visitNotesSdkVo.patientStatement, '\n', '<br/>')}"
+                     class="line-wrap">
+                </div>
+            </div>
+
+            <!-- 4. Pertinent Labs (相关实验室检查结果 / 相关化验结果) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.pertinentInspectionResult != null and !#strings.isEmpty(data.visitNotesSdkVo.pertinentInspectionResult)}">
+                <div class="subtitle">Pertinent Labs</div>
+                <div class="line-wrap"
+                     th:utext="${#strings.replace(data.visitNotesSdkVo.pertinentInspectionResult, '\n', '<br/>')}">
+                </div>
+            </div>
+
+            <!-- 5. Medications (用药) -->
+            <div class="block" th:if="(${data.visitNotesSdkVo.medications} and !${#arrays.isEmpty(data.visitNotesSdkVo.medications)}) or ${data.visitNotesSdkVo.medicationComment}">
+                <div class="subtitle">Medications</div>
+                <div th:if="${data.visitNotesSdkVo.medications} and !${#arrays.isEmpty(data.visitNotesSdkVo.medications)}">
+                    <ul class="flexRowStartColStart flexWrap">
+                        <li th:each="item,iter : ${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).jsonArrToObj(data.visitNotesSdkVo.medications)}">
+                            <span class="medications-name" th:text="${item.name}"></span>
+                            <span th:text="${item.frequencyTransText}"> </span>,
+                            <span th:text="${item.morningValue }"></span>
+                            <span th:text="${data.allUnits.dosageUnits[item.morningUnit].label }">/time,</span>
+                            <span th:text="${data.allUnits.usageUnits[item.usage].label}"></span>
+                            <span class="time"> -Enter On</span>
+                            <span class="time"
+                                  th:text="${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).format(item.gmtCreate,'MM/dd/yyyy hh:mm a',data.zoneId)}"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div th:if="${data.visitNotesSdkVo.medicationComment}"
+                     th:text="${data.visitNotesSdkVo.medicationComment}"
+                     class="line-wrap">
+                </div>
+            </div>
+
+            <!-- 6. Diagnosis (诊断) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.assessment != null and data.visitNotesSdkVo.assessment !='[]' and data.visitNotesSdkVo.assessment.contains('diagnoseList') and T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).jsonToObj(data.visitNotesSdkVo.assessment).diagnoseList != null and !T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).jsonToObj(data.visitNotesSdkVo.assessment).diagnoseList.isEmpty()}">
+                <div class="subtitle">Diagnosis</div>
+                <div class="medicationArea">
+                    <div>
+                        <ul>
+                            <li th:each="item,iter : ${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).jsonToObj(data.visitNotesSdkVo.assessment).diagnoseList}">
+                                <span th:text="${item.name }"></span>
+                                <span th:if="${item.icd10code}" th:text="' (' + ${item.icd10code} + ')'"></span>
+                                <span th:with="info=${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).jsonToObj(data.visitNotesSdkVo.assessment)}">
+                                        -
+                                        <span class="time" th:if="info.createTime"
+                                              th:text="${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).format(info.createTime,'MM/dd/yyyy hh:mm a',data.zoneId)}"></span>
+                                        <span class="time">by</span>
+                                        <span style="margin-left:5px" class="time" th:if="info.createUser"
+                                              th:text="${info.createUser}">
+                                        </span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Nutrition Diagnosis (营养诊断) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.nutritionDiagnosis != null and !#strings.isEmpty(data.visitNotesSdkVo.nutritionDiagnosis)}">
+                <div class="subtitle">Nutrition Diagnosis</div>
+                <div class="line-wrap"
+                     th:utext="${#strings.replace(data.visitNotesSdkVo.nutritionDiagnosis, '\n', '<br/>')}">
+                </div>
+            </div>
+
+            <!-- 8. Individualized Treatment Goals to Address Nutrition Diagnosis (针对营养诊断的个体化治疗目标) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.treatmentGoalsForNutritionDiagnosis != null and !#strings.isEmpty(data.visitNotesSdkVo.treatmentGoalsForNutritionDiagnosis)}">
+                <div class="subtitle">Individualized Treatment Goals to Address Nutrition Diagnosis</div>
+                <div class="line-wrap"
+                     th:utext="${#strings.replace(data.visitNotesSdkVo.treatmentGoalsForNutritionDiagnosis, '\n', '<br/>')}">
+                </div>
+            </div>
+
+            <!-- 9. Implementation of Intervention (干预措施的实施 / 干预措施执行) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.nutritionIntervention != null and !#strings.isEmpty(data.visitNotesSdkVo.nutritionIntervention)}">
+                <div class="subtitle">Implementation of Intervention</div>
+                <div class="line-wrap"
+                     th:utext="${#strings.replace(data.visitNotesSdkVo.nutritionIntervention, '\n', '<br/>')}">
+                </div>
+            </div>
+
+            <!-- 10. Education Materials Provided (提供的教育材料 / 已提供教育材料) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.nutritionEducation != null and !#strings.isEmpty(data.visitNotesSdkVo.nutritionEducation)}">
+                <div class="subtitle">Education Materials Provided</div>
+                <div class="line-wrap"
+                     th:utext="${#strings.replace(data.visitNotesSdkVo.nutritionEducation, '\n', '<br/>')}">
+                </div>
+            </div>
+
+            <!-- 11. Referrals and RD FollowUp Plan for Monitoring and Evaluation (转诊建议及注册营养师 (RD) 的监测与评估随访计划) -->
+            <div class="block" th:if="${data.visitNotesSdkVo.nutritionReferralAdvice != null and !#strings.isEmpty(data.visitNotesSdkVo.nutritionReferralAdvice)}">
+                <div class="subtitle">Referrals and RD Follow Up Plan for Monitoring and Evaluation</div>
+                <div class="line-wrap"
+                     th:utext="${#strings.replace(data.visitNotesSdkVo.nutritionReferralAdvice, '\n', '<br/>')}">
+                </div>
+            </div>
+
+            <div class="exportUser-box">
+                <div class="signature">
+                    <div class="signature-left">
+                        <span>Visited On:</span>
+                        <span class="text"
+                              th:text="${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).format(data.visitNotesSdkVo.visitTime,'MM/dd/yyyy hh:mm a',data.zoneId)}"></span>
+                    </div>
+                    <div class="text signature-right" th:if="${data.visitNotesSdkVo.signatureName}">
+                        <span>Electronically signed by:</span>
+                        <span class="text" th:text="${data.visitNotesSdkVo.signatureName}"></span>
+                        <span>on</span>
+                        <span th:text="${T(com.shukangyun.app.doctor.query.service.impl.practice.ThUtil).format(data.visitNotesSdkVo.gmtSignature,'MM/dd/yyyy hh:mm a',data.zoneId)}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
